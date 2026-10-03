@@ -1,0 +1,2378 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BOB OS</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    background:#050b14;
+    color:#e8f4ff;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+header{
+    padding:20px;
+    background:linear-gradient(135deg,#071b33,#123b62);
+    border-bottom:2px solid #2385d8;
+}
+
+header h1{
+    margin:0;
+    font-size:38px;
+    color:#55b8ff;
+    text-shadow:0 0 15px #168cff;
+}
+
+header p{
+    margin:5px 0 0;
+    color:#91b8d8;
+}
+
+nav{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+    padding:10px;
+    background:#081522;
+    position:sticky;
+    top:0;
+    z-index:5;
+}
+
+button{
+    border:1px solid #285779;
+    background:#102a43;
+    color:white;
+    padding:10px 14px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+button:hover{
+    background:#18558a;
+}
+
+button.active{
+    background:#167bd1;
+}
+
+main{
+    max-width:1250px;
+    margin:auto;
+    padding:18px;
+}
+
+.page{
+    display:none;
+}
+
+.page.active{
+    display:block;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:15px;
+}
+
+.card{
+    background:#0b1928;
+    border:1px solid #1c3d59;
+    border-radius:13px;
+    padding:18px;
+    box-shadow:0 0 20px #0006;
+}
+
+.card h2{
+    margin-top:0;
+    color:#65bdff;
+}
+
+.big{
+    font-size:30px;
+    font-weight:bold;
+}
+
+.green{color:#43e88b}
+.red{color:#ff6375}
+.blue{color:#5dbaff}
+.yellow{color:#ffd15c}
+
+input,select,textarea{
+    width:100%;
+    padding:11px;
+    margin:5px 0 12px;
+    border-radius:7px;
+    border:1px solid #31546e;
+    background:#06111d;
+    color:white;
+}
+
+textarea{
+    min-height:150px;
+    resize:vertical;
+}
+
+.chat{
+    height:430px;
+    overflow:auto;
+    padding:15px;
+    background:#050c15;
+    border-radius:10px;
+    border:1px solid #1d3c57;
+}
+
+.msg{
+    margin:10px 0;
+    padding:11px;
+    border-radius:10px;
+    max-width:85%;
+}
+
+.bob{
+    background:#103251;
+    border-left:4px solid #42aaff;
+}
+
+.user{
+    background:#193b27;
+    border-right:4px solid #43e88b;
+    margin-left:auto;
+}
+
+.chatInput{
+    display:flex;
+    gap:8px;
+    margin-top:10px;
+}
+
+.chatInput input{
+    margin:0;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:9px;
+    text-align:left;
+    border-bottom:1px solid #20394f;
+}
+
+th{
+    color:#82b7dc;
+}
+
+.log{
+    height:180px;
+    overflow:auto;
+    background:#03080e;
+    padding:10px;
+    border-radius:8px;
+    font-family:monospace;
+    font-size:13px;
+}
+
+.progress{
+    height:10px;
+    background:#172b3c;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+.progress div{
+    height:100%;
+    background:#268ee0;
+}
+
+.chart{
+    height:210px;
+    display:flex;
+    align-items:end;
+    gap:3px;
+    background:#050d16;
+    padding:10px;
+    border-radius:8px;
+}
+
+.bar{
+    flex:1;
+    background:#288bd7;
+    min-width:3px;
+    border-radius:3px 3px 0 0;
+}
+
+.notice{
+    padding:12px;
+    margin-bottom:15px;
+    background:#10283e;
+    border-left:4px solid #45aaff;
+    border-radius:6px;
+}
+
+#loginScreen{
+    position:fixed;
+    inset:0;
+    background:#030912;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:20;
+}
+
+.loginBox{
+    width:min(420px,90%);
+    background:#0b1b2b;
+    border:1px solid #287fc2;
+    border-radius:15px;
+    padding:25px;
+    box-shadow:0 0 40px #168cff44;
+}
+
+.loginBox h1{
+    color:#54b7ff;
+}
+
+.hidden{
+    display:none!important;
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+
+<div id="loginScreen">
+
+<div class="loginBox">
+
+<h1>BOB OS</h1>
+
+<p>Welcome. Create your local Bob account.</p>
+
+<label>Username</label>
+<input id="loginName" placeholder="Your name">
+
+<label>Password</label>
+<input id="loginPassword" type="password" placeholder="Create a password">
+
+<button onclick="login()">ENTER BOB OS</button>
+
+<p id="loginMessage" class="red"></p>
+
+</div>
+
+</div>
+
+
+<!-- HEADER -->
+
+<header>
+
+<h1>BOB OS</h1>
+
+<p>
+Personal Assistant • Finance • Calculator • Games • Notes • Simulator
+</p>
+
+</header>
+
+
+<!-- NAV -->
+
+<nav>
+
+<button class="active" onclick="openPage('home',this)">Home</button>
+
+<button onclick="openPage('assistant',this)">Bob AI</button>
+
+<button onclick="openPage('finance',this)">Finance</button>
+
+<button onclick="openPage('market',this)">Market</button>
+
+<button onclick="openPage('trade',this)">Trading</button>
+
+<button onclick="openPage('budget',this)">Budget</button>
+
+<button onclick="openPage('goals',this)">Goals</button>
+
+<button onclick="openPage('calculator',this)">Calculator</button>
+
+<button onclick="openPage('games',this)">Games</button>
+
+<button onclick="openPage('notes',this)">Notes</button>
+
+<button onclick="openPage('system',this)">System</button>
+
+</nav>
+
+
+<main>
+
+
+<!-- HOME -->
+
+<section id="home" class="page active">
+
+<div class="notice">
+Welcome back, <b id="welcomeName"></b>. Bob is ready.
+</div>
+
+<div class="grid">
+
+<div class="card">
+<h2>Cash</h2>
+<div class="big green" id="homeCash">$10,000.00</div>
+</div>
+
+<div class="card">
+<h2>Portfolio</h2>
+<div class="big blue" id="homePortfolio">$0.00</div>
+</div>
+
+<div class="card">
+<h2>Net Worth</h2>
+<div class="big" id="homeWorth">$10,000.00</div>
+</div>
+
+<div class="card">
+<h2>P/L</h2>
+<div class="big" id="homePnl">$0.00</div>
+</div>
+
+</div>
+
+<br>
+
+<div class="grid">
+
+<div class="card">
+<h2>Bob Status</h2>
+<p class="green">● ONLINE</p>
+<p>Assistant systems operational.</p>
+<p>Market simulator operational.</p>
+<p>Local storage operational.</p>
+</div>
+
+<div class="card">
+<h2>Quick Commands</h2>
+<p><b>joke</b> — Bob tells a joke</p>
+<p><b>time</b> — current time</p>
+<p><b>date</b> — current date</p>
+<p><b>calculator</b> — open calculator</p>
+<p><b>finance</b> — financial dashboard</p>
+<p><b>game</b> — play a number game</p>
+<p><b>help</b> — show Bob commands</p>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ASSISTANT -->
+
+<section id="assistant" class="page">
+
+<div class="card">
+
+<h2>🤖 Bob AI</h2>
+
+<div id="chat" class="chat"></div>
+
+<div class="chatInput">
+
+<input
+id="chatInput"
+placeholder="Talk to Bob..."
+onkeydown="if(event.key==='Enter')sendMessage()"
+>
+
+<button onclick="sendMessage()">SEND</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- FINANCE -->
+
+<section id="finance" class="page">
+
+<div class="grid">
+
+<div class="card">
+<h2>Cash</h2>
+<div class="big green" id="financeCash">$10,000</div>
+</div>
+
+<div class="card">
+<h2>Portfolio</h2>
+<div class="big blue" id="financePortfolio">$0</div>
+</div>
+
+<div class="card">
+<h2>Total Value</h2>
+<div class="big" id="financeWorth">$10,000</div>
+</div>
+
+<div class="card">
+<h2>Profit/Loss</h2>
+<div class="big" id="financePnl">$0</div>
+</div>
+
+</div>
+
+<br>
+
+<div class="card">
+
+<h2>Holdings</h2>
+
+<div id="holdings">
+No investments yet.
+</div>
+
+</div>
+
+</section>
+
+
+<!-- MARKET -->
+
+<section id="market" class="page">
+
+<div class="card">
+
+<h2>📈 Simulated Market</h2>
+
+<p>
+Prices update automatically. These are fictional simulation prices.
+</p>
+
+<div id="marketTable"></div>
+
+</div>
+
+<br>
+
+<div class="card">
+
+<h2>Market Chart — AAPL</h2>
+
+<div class="chart" id="chart"></div>
+
+</div>
+
+</section>
+
+
+<!-- TRADING -->
+
+<section id="trade" class="page">
+
+<div class="grid">
+
+<div class="card">
+
+<h2>Paper Trading</h2>
+
+<label>Asset</label>
+
+<select id="tradeAsset"></select>
+
+<label>Action</label>
+
+<select id="tradeAction">
+
+<option>BUY</option>
+<option>SELL</option>
+
+</select>
+
+<label>Shares</label>
+
+<input
+id="tradeShares"
+type="number"
+value="1"
+min="0.01"
+step="0.01"
+>
+
+<button onclick="executeTrade()">
+EXECUTE TRADE
+</button>
+
+<p class="muted">
+Paper trading only. No real money is involved.
+</p>
+
+</div>
+
+
+<div class="card">
+
+<h2>Risk Monitor</h2>
+
+<div id="risk"></div>
+
+</div>
+
+</div>
+
+<br>
+
+<div class="card">
+
+<h2>Trade History</h2>
+
+<div id="trades"></div>
+
+</div>
+
+</section>
+
+
+<!-- BUDGET -->
+
+<section id="budget" class="page">
+
+<div class="grid">
+
+<div class="card">
+
+<h2>Monthly Budget</h2>
+
+<label>Income</label>
+<input id="income" type="number" value="3000">
+
+<label>Housing</label>
+<input id="housing" type="number" value="900">
+
+<label>Food</label>
+<input id="food" type="number" value="400">
+
+<label>Transportation</label>
+<input id="transport" type="number" value="250">
+
+<label>Other</label>
+<input id="other" type="number" value="250">
+
+<button onclick="calculateBudget()">
+CALCULATE
+</button>
+
+</div>
+
+
+<div class="card">
+
+<h2>Results</h2>
+
+<div id="budgetResult">
+Enter your information.
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- GOALS -->
+
+<section id="goals" class="page">
+
+<div class="grid">
+
+<div class="card">
+
+<h2>Financial Goal</h2>
+
+<label>Goal name</label>
+<input id="goalName" placeholder="New computer">
+
+<label>Target</label>
+<input id="goalTarget" type="number" value="1000">
+
+<label>Current amount</label>
+<input id="goalCurrent" type="number" value="0">
+
+<label>Monthly contribution</label>
+<input id="goalMonthly" type="number" value="100">
+
+<button onclick="addGoal()">
+ADD GOAL
+</button>
+
+</div>
+
+
+<div class="card">
+
+<h2>Your Goals</h2>
+
+<div id="goalList">
+No goals.
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- CALCULATOR -->
+
+<section id="calculator" class="page">
+
+<div class="card">
+
+<h2>🧮 Bob Calculator</h2>
+
+<input
+id="calcInput"
+placeholder="Example: 25*4+10"
+onkeydown="if(event.key==='Enter')calculate()"
+>
+
+<button onclick="calculate()">
+CALCULATE
+</button>
+
+<h2 id="calcResult">Result: --</h2>
+
+</div>
+
+</section>
+
+
+<!-- GAMES -->
+
+<section id="games" class="page">
+
+<div class="card">
+
+<h2>🎮 Number Guessing Game</h2>
+
+<p>
+Bob picked a number from 1 to 100.
+</p>
+
+<input
+id="guess"
+type="number"
+min="1"
+max="100"
+>
+
+<button onclick="guessNumber()">
+GUESS
+</button>
+
+<button onclick="newGame()">
+NEW GAME
+</button>
+
+<h2 id="gameResult">
+Good luck!
+</h2>
+
+</div>
+
+</section>
+
+
+<!-- NOTES -->
+
+<section id="notes" class="page">
+
+<div class="card">
+
+<h2>📝 Bob Notes</h2>
+
+<textarea
+id="notesBox"
+placeholder="Write something here..."
+oninput="saveNotes()"
+></textarea>
+
+<p class="green">
+Notes automatically save on this device.
+</p>
+
+</div>
+
+</section>
+
+
+<!-- SYSTEM -->
+
+<section id="system" class="page">
+
+<div class="grid">
+
+<div class="card">
+
+<h2>System</h2>
+
+<p>User: <b id="systemUser"></b></p>
+
+<p>Browser storage: <span class="green">ACTIVE</span></p>
+
+<p>Market engine: <span class="green">ACTIVE</span></p>
+
+<p>Bob engine: <span class="green">ACTIVE</span></p>
+
+<button onclick="resetEverything()">
+RESET ALL DATA
+</button>
+
+</div>
+
+
+<div class="card">
+
+<h2>Bob System Log</h2>
+
+<div class="log" id="systemLog"></div>
+
+</div>
+
+</div>
+
+</section>
+
+</main>
+
+
+<script>
+
+/* ==========================================
+   BOB OS DATA
+========================================== */
+
+const assets = JSON.parse(
+localStorage.getItem("bobAssets")
+) || {
+
+AAPL:{
+name:"Apple",
+price:190,
+sector:"Technology",
+history:[190]
+},
+
+MSFT:{
+name:"Microsoft",
+price:420,
+sector:"Technology",
+history:[420]
+},
+
+NVDA:{
+name:"NVIDIA",
+price:125,
+sector:"Technology",
+history:[125]
+},
+
+TSLA:{
+name:"Tesla",
+price:250,
+sector:"Automotive",
+history:[250]
+},
+
+KO:{
+name:"Coca-Cola",
+price:70,
+sector:"Consumer",
+history:[70]
+},
+
+DIS:{
+name:"Disney",
+price:95,
+sector:"Entertainment",
+history:[95]
+}
+
+};
+
+
+let data = JSON.parse(
+localStorage.getItem("bobData")
+) || {
+
+cash:10000,
+
+holdings:{},
+
+transactions:[],
+
+goals:[],
+
+startValue:10000,
+
+notes:"",
+
+user:""
+
+};
+
+
+/* ==========================================
+   LOGIN
+========================================== */
+
+function login(){
+
+let name =
+document.getElementById(
+"loginName"
+).value.trim();
+
+let password =
+document.getElementById(
+"loginPassword"
+).value;
+
+if(!name || !password){
+
+document.getElementById(
+"loginMessage"
+).textContent =
+"Please enter a name and password.";
+
+return;
+
+}
+
+data.user = name;
+
+localStorage.setItem(
+"bobPassword",
+password
+);
+
+save();
+
+document.getElementById(
+"loginScreen"
+).classList.add("hidden");
+
+document.getElementById(
+"welcomeName"
+).textContent =
+name;
+
+document.getElementById(
+"systemUser"
+).textContent =
+name;
+
+addBob(
+"Hello " +
+name +
+"! I'm Bob. Type <b>help</b> to see what I can do."
+);
+
+logSystem(
+"User logged into Bob OS."
+);
+
+}
+
+
+/* ==========================================
+   STORAGE
+========================================== */
+
+function save(){
+
+localStorage.setItem(
+"bobData",
+JSON.stringify(data)
+);
+
+localStorage.setItem(
+"bobAssets",
+JSON.stringify(assets)
+);
+
+}
+
+
+function logSystem(message){
+
+let log =
+document.getElementById(
+"systemLog"
+);
+
+if(!log)return;
+
+log.innerHTML =
+`[${new Date().toLocaleTimeString()}] ${message}<br>`
++
+log.innerHTML;
+
+}
+
+
+/* ==========================================
+   NAVIGATION
+========================================== */
+
+function openPage(id,button){
+
+document
+.querySelectorAll(".page")
+.forEach(
+page =>
+page.classList.remove("active")
+);
+
+document
+.getElementById(id)
+.classList.add("active");
+
+document
+.querySelectorAll("nav button")
+.forEach(
+b => b.classList.remove("active")
+);
+
+button.classList.add("active");
+
+render();
+
+}
+
+
+/* ==========================================
+   MONEY
+========================================== */
+
+function money(number){
+
+return "$" +
+Number(number).toLocaleString(
+undefined,
+{
+minimumFractionDigits:2,
+maximumFractionDigits:2
+}
+);
+
+}
+
+
+/* ==========================================
+   PORTFOLIO
+========================================== */
+
+function portfolioValue(){
+
+return Object
+.entries(data.holdings)
+.reduce(
+(sum,[symbol,shares]) =>
+
+sum +
+assets[symbol].price *
+shares,
+
+0
+);
+
+}
+
+
+/* ==========================================
+   BOB CHAT
+========================================== */
+
+function addBob(message){
+
+let chat =
+document.getElementById("chat");
+
+chat.innerHTML +=
+`
+<div class="msg bob">
+<b>BOB:</b> ${message}
+</div>
+`;
+
+chat.scrollTop =
+chat.scrollHeight;
+
+}
+
+
+function addUser(message){
+
+let chat =
+document.getElementById("chat");
+
+chat.innerHTML +=
+`
+<div class="msg user">
+<b>YOU:</b> ${message}
+</div>
+`;
+
+chat.scrollTop =
+chat.scrollHeight;
+
+}
+
+
+function sendMessage(){
+
+let input =
+document.getElementById(
+"chatInput"
+);
+
+let message =
+input.value.trim();
+
+if(!message)return;
+
+addUser(message);
+
+input.value="";
+
+setTimeout(
+() => bobThink(message),
+300
+);
+
+}
+
+
+function bobThink(message){
+
+let text =
+message.toLowerCase();
+
+
+if(
+text.includes("hello") ||
+text.includes("hi") ||
+text.includes("hey")
+){
+
+addBob(
+"Hey! I'm Bob. 😎"
+);
+
+return;
+
+}
+
+
+if(text.includes("help")){
+
+addBob(`
+
+<b>BOB COMMANDS</b><br><br>
+
+• joke<br>
+• time<br>
+• date<br>
+• calculator<br>
+• finance<br>
+• market<br>
+• trading<br>
+• budget<br>
+• goals<br>
+• game<br>
+• notes<br>
+• hello<br>
+• clear<br><br>
+
+You can also ask me simple questions such as
+"What can you do?"
+
+`);
+
+return;
+
+}
+
+
+if(text.includes("joke")){
+
+let jokes=[
+
+"Why did the computer get cold? It left its Windows open. 😂",
+
+"Why was the JavaScript developer broke? Because he used up all his cache. 😎",
+
+"What do computers eat? Microchips! 😂",
+
+"Why did the programmer quit his job? He didn't get arrays. 😆"
+
+];
+
+addBob(
+jokes[
+Math.floor(
+Math.random()*jokes.length
+)
+]
+);
+
+return;
+
+}
+
+
+if(text.includes("time")){
+
+addBob(
+"The current time is " +
+new Date().toLocaleTimeString()
+);
+
+return;
+
+}
+
+
+if(text.includes("date")){
+
+addBob(
+"Today's date is " +
+new Date().toLocaleDateString()
+);
+
+return;
+
+}
+
+
+if(text.includes("calculator")){
+
+openPageByName("calculator");
+
+addBob(
+"I opened the calculator."
+);
+
+return;
+
+}
+
+
+if(text.includes("finance")){
+
+openPageByName("finance");
+
+addBob(
+"Opening your financial dashboard."
+);
+
+return;
+
+}
+
+
+if(text.includes("market")){
+
+openPageByName("market");
+
+addBob(
+"Opening the simulated market."
+);
+
+return;
+
+}
+
+
+if(
+text.includes("trade") ||
+text.includes("trading")
+){
+
+openPageByName("trade");
+
+addBob(
+"Opening paper trading."
+);
+
+return;
+
+}
+
+
+if(text.includes("budget")){
+
+openPageByName("budget");
+
+addBob(
+"Opening the budget planner."
+);
+
+return;
+
+}
+
+
+if(text.includes("goal")){
+
+openPageByName("goals");
+
+addBob(
+"Opening your financial goals."
+);
+
+return;
+
+}
+
+
+if(text.includes("game")){
+
+openPageByName("games");
+
+addBob(
+"Let's play! I opened the games page."
+);
+
+return;
+
+}
+
+
+if(text.includes("note")){
+
+openPageByName("notes");
+
+addBob(
+"Opening your notes."
+);
+
+return;
+
+}
+
+
+if(text.includes("what can you do")){
+
+addBob(`
+
+I can help you use Bob OS!
+
+I have a calculator, games,
+notes, budgeting tools, financial
+planning tools, a simulated market,
+and paper trading.
+
+I can also remember information
+locally on this device.
+
+`);
+
+return;
+
+}
+
+
+if(text.includes("clear")){
+
+document.getElementById(
+"chat"
+).innerHTML="";
+
+addBob("Chat cleared.");
+
+return;
+
+}
+
+
+addBob(
+
+"I don't have a built-in answer for that yet. " +
+"Try <b>help</b> to see my commands."
+
+);
+
+}
+
+
+function openPageByName(name){
+
+let button =
+[...document.querySelectorAll(
+"nav button"
+)]
+.find(
+b =>
+b.textContent
+.toLowerCase()
+.includes(name)
+);
+
+if(button)
+openPage(name,button);
+
+}
+
+
+/* ==========================================
+   CALCULATOR
+========================================== */
+
+function calculate(){
+
+let expression =
+document.getElementById(
+"calcInput"
+).value;
+
+try{
+
+/*
+ Only allow calculator characters.
+ */
+
+if(
+!/^[0-9+\-*/().%\s]+$/
+.test(expression)
+){
+
+throw new Error();
+
+}
+
+let result =
+Function(
+"return " +
+expression
+)();
+
+document.getElementById(
+"calcResult"
+).textContent =
+"Result: " + result;
+
+}
+
+catch{
+
+document.getElementById(
+"calcResult"
+).textContent =
+"Result: Invalid calculation";
+
+}
+
+}
+
+
+/* ==========================================
+   GAMES
+========================================== */
+
+let secret =
+Math.floor(
+Math.random()*100
+)+1;
+
+
+function newGame(){
+
+secret =
+Math.floor(
+Math.random()*100
+)+1;
+
+document.getElementById(
+"gameResult"
+).textContent =
+"New number generated!";
+
+}
+
+
+function guessNumber(){
+
+let guess =
+Number(
+document.getElementById(
+"guess"
+).value
+);
+
+if(
+!guess ||
+guess<1 ||
+guess>100
+){
+
+return;
+
+}
+
+if(guess===secret){
+
+document.getElementById(
+"gameResult"
+).textContent =
+"🎉 Correct! You got it!";
+
+}
+
+else if(guess<secret){
+
+document.getElementById(
+"gameResult"
+).textContent =
+"Too low!";
+
+}
+
+else{
+
+document.getElementById(
+"gameResult"
+).textContent =
+"Too high!";
+
+}
+
+}
+
+
+/* ==========================================
+   FINANCE RENDER
+========================================== */
+
+function renderFinance(){
+
+let portfolio =
+portfolioValue();
+
+let worth =
+data.cash +
+portfolio;
+
+let pnl =
+worth -
+data.startValue;
+
+
+document.getElementById(
+"homeCash"
+).textContent =
+money(data.cash);
+
+document.getElementById(
+"homePortfolio"
+).textContent =
+money(portfolio);
+
+document.getElementById(
+"homeWorth"
+).textContent =
+money(worth);
+
+document.getElementById(
+"homePnl"
+).textContent =
+money(pnl);
+
+
+document.getElementById(
+"financeCash"
+).textContent =
+money(data.cash);
+
+document.getElementById(
+"financePortfolio"
+).textContent =
+money(portfolio);
+
+document.getElementById(
+"financeWorth"
+).textContent =
+money(worth);
+
+document.getElementById(
+"financePnl"
+).textContent =
+money(pnl);
+
+
+let positions =
+Object
+.entries(data.holdings)
+.filter(
+([s,q])=>q>0
+);
+
+
+document.getElementById(
+"holdings"
+).innerHTML =
+
+positions.length
+
+?
+
+`
+<table>
+
+<tr>
+<th>Asset</th>
+<th>Shares</th>
+<th>Price</th>
+<th>Value</th>
+</tr>
+
+${
+positions.map(
+([symbol,shares]) =>
+
+`
+<tr>
+
+<td>${symbol}</td>
+
+<td>${shares.toFixed(2)}</td>
+
+<td>${money(
+assets[symbol].price
+)}</td>
+
+<td>${money(
+shares *
+assets[symbol].price
+)}</td>
+
+</tr>
+`
+).join("")
+}
+
+</table>
+`
+
+:
+
+"No investments yet.";
+
+}
+
+
+/* ==========================================
+   MARKET
+========================================== */
+
+function renderMarket(){
+
+document.getElementById(
+"marketTable"
+).innerHTML =
+
+`
+<table>
+
+<tr>
+<th>Ticker</th>
+<th>Name</th>
+<th>Price</th>
+<th>Change</th>
+<th>Sector</th>
+</tr>
+
+${
+Object.entries(assets)
+.map(
+([symbol,a]) => {
+
+let old =
+a.history.at(-2)
+||
+a.price;
+
+let change =
+a.price-old;
+
+return`
+
+<tr>
+
+<td><b>${symbol}</b></td>
+
+<td>${a.name}</td>
+
+<td>${money(a.price)}</td>
+
+<td class="${
+change>=0
+?
+"green"
+:
+"red"
+}">
+
+${change>=0?"+":""}
+${money(change)}
+
+</td>
+
+<td>${a.sector}</td>
+
+</tr>
+
+`;
+
+}
+).join("")
+}
+
+</table>
+`;
+
+
+let history =
+assets.AAPL.history.slice(-70);
+
+let max =
+Math.max(...history);
+
+let min =
+Math.min(...history);
+
+
+document.getElementById(
+"chart"
+).innerHTML =
+
+history.map(
+value =>
+
+`
+<div
+class="bar"
+style="
+height:${Math.max(
+5,
+(value-min)/(max-min||1)*100
+)}%"
+></div>
+`
+).join("");
+
+}
+
+
+/* ==========================================
+   TRADING
+========================================== */
+
+function renderTrade(){
+
+document.getElementById(
+"tradeAsset"
+).innerHTML =
+
+Object.entries(assets)
+.map(
+([symbol,a]) =>
+
+`
+<option value="${symbol}">
+${symbol} —
+${a.name} —
+${money(a.price)}
+</option>
+`
+
+).join("");
+
+
+let portfolio =
+portfolioValue();
+
+let largest=0;
+
+for(
+let [symbol,shares]
+of Object.entries(data.holdings)
+){
+
+largest =
+Math.max(
+largest,
+(
+shares *
+assets[symbol].price
+) /
+(portfolio||1)
+);
+
+}
+
+
+document.getElementById(
+"risk"
+).innerHTML =
+
+`
+
+<p>
+Largest position:
+<b>
+${(largest*100).toFixed(1)}%
+</b>
+</p>
+
+<p>
+Cash:
+<b>
+${money(data.cash)}
+</b>
+</p>
+
+<p>
+Positions:
+<b>
+${
+Object.keys(data.holdings)
+.filter(
+s=>data.holdings[s]>0
+).length
+}
+</b>
+</p>
+
+<p class="muted">
+This is a simple educational risk monitor.
+</p>
+
+`;
+
+
+if(!data.transactions.length){
+
+document.getElementById(
+"trades"
+).innerHTML =
+"No trades yet.";
+
+return;
+
+}
+
+
+document.getElementById(
+"trades"
+).innerHTML =
+
+`
+<table>
+
+<tr>
+<th>Time</th>
+<th>Action</th>
+<th>Asset</th>
+<th>Shares</th>
+<th>Price</th>
+<th>Total</th>
+</tr>
+
+${
+data.transactions.map(
+t =>
+
+`
+<tr>
+
+<td>${t.time}</td>
+
+<td class="${
+t.action==="BUY"
+?
+"green"
+:
+"red"
+}">
+
+${t.action}
+
+</td>
+
+<td>${t.symbol}</td>
+
+<td>${t.shares}</td>
+
+<td>${money(t.price)}</td>
+
+<td>${money(t.total)}</td>
+
+</tr>
+
+`
+).join("")
+}
+
+</table>
+`;
+
+}
+
+
+function executeTrade(){
+
+let symbol =
+document.getElementById(
+"tradeAsset"
+).value;
+
+let action =
+document.getElementById(
+"tradeAction"
+).value;
+
+let shares =
+Number(
+document.getElementById(
+"tradeShares"
+).value
+);
+
+if(!shares || shares<=0){
+
+alert("Enter a valid number of shares.");
+
+return;
+
+}
+
+let price =
+assets[symbol].price;
+
+let total =
+price*shares;
+
+
+if(action==="BUY"){
+
+if(total>data.cash){
+
+alert(
+"Not enough simulated cash."
+);
+
+return;
+
+}
+
+data.cash -= total;
+
+data.holdings[symbol] =
+(data.holdings[symbol]||0)
++
+shares;
+
+}
+
+
+else{
+
+if(
+(data.holdings[symbol]||0)
+<
+shares
+){
+
+alert(
+"You don't own enough shares."
+);
+
+return;
+
+}
+
+data.cash += total;
+
+data.holdings[symbol] -= shares;
+
+}
+
+
+data.transactions.unshift({
+
+time:new Date().toLocaleString(),
+
+action,
+
+symbol,
+
+shares,
+
+price,
+
+total
+
+});
+
+
+logSystem(
+`${action} ${shares} ${symbol}`
+);
+
+save();
+
+render();
+
+}
+
+
+/* ==========================================
+   BUDGET
+========================================== */
+
+function calculateBudget(){
+
+let income =
+Number(
+document.getElementById(
+"income"
+).value
+)||0;
+
+
+let expenses =
+[
+"housing",
+"food",
+"transport",
+"other"
+]
+.reduce(
+
+(total,id) =>
+
+total +
+(
+Number(
+document.getElementById(id).value
+)||0
+),
+
+0
+
+);
+
+
+let remaining =
+income-expenses;
+
+
+document.getElementById(
+"budgetResult"
+).innerHTML =
+
+`
+
+<p>
+Income:
+<b>${money(income)}</b>
+</p>
+
+<p>
+Expenses:
+<b>${money(expenses)}</b>
+</p>
+
+<p>
+Remaining:
+<b class="${
+remaining>=0
+?
+"green"
+:
+"red"
+}">
+${money(remaining)}
+</b>
+</p>
+
+<p>
+Example 20% savings amount:
+<b>
+${money(
+Math.max(0,remaining*.20)
+)}
+</b>
+</p>
+
+`;
+
+}
+
+
+/* ==========================================
+   GOALS
+========================================== */
+
+function addGoal(){
+
+let name =
+document.getElementById(
+"goalName"
+).value.trim();
+
+let target =
+Number(
+document.getElementById(
+"goalTarget"
+).value
+);
+
+let current =
+Number(
+document.getElementById(
+"goalCurrent"
+).value
+);
+
+let monthly =
+Number(
+document.getElementById(
+"goalMonthly"
+).value
+);
+
+
+if(
+!name ||
+target<=0 ||
+monthly<0
+){
+
+alert(
+"Enter valid goal information."
+);
+
+return;
+
+}
+
+
+data.goals.push({
+
+name,
+
+target,
+
+current,
+
+monthly
+
+});
+
+
+save();
+
+render();
+
+}
+
+
+function renderGoals(){
+
+if(!data.goals.length){
+
+document.getElementById(
+"goalList"
+).innerHTML =
+"No goals.";
+
+return;
+
+}
+
+
+document.getElementById(
+"goalList"
+).innerHTML =
+
+data.goals.map(
+goal => {
+
+let percent =
+Math.min(
+100,
+goal.current/
+goal.target*
+100
+);
+
+let months =
+goal.monthly>0
+
+?
+
+Math.ceil(
+Math.max(
+0,
+goal.target-
+goal.current
+)/
+goal.monthly
+)
+
+:
+
+Infinity;
+
+
+return`
+
+<div
+class="card"
+style="margin-bottom:10px"
+>
+
+<b>${goal.name}</b>
+
+<p>
+${money(goal.current)}
+/
+${money(goal.target)}
+</p>
+
+<div class="progress">
+
+<div
+style="
+width:${percent}%
+"
+></div>
+
+</div>
+
+<p>
+${percent.toFixed(0)}%
+complete
+</p>
+
+<p class="muted">
+
+${
+months===Infinity
+?
+"No monthly contribution"
+:
+months+
+" months remaining at current contribution"
+}
+
+</p>
+
+</div>
+
+`;
+
+}
+).join("");
+
+}
+
+
+/* ==========================================
+   NOTES
+========================================== */
+
+function saveNotes(){
+
+data.notes =
+document.getElementById(
+"notesBox"
+).value;
+
+save();
+
+}
+
+
+/* ==========================================
+   MARKET ENGINE
+========================================== */
+
+function marketTick(){
+
+for(
+let asset of Object.values(assets)
+){
+
+let movement =
+(Math.random()-.5)
+*.035;
+
+asset.price =
+Math.max(
+.01,
+asset.price*
+(1+movement)
+);
+
+asset.history.push(
+asset.price
+);
+
+if(
+asset.history.length>100
+){
+
+asset.history.shift();
+
+}
+
+}
+
+save();
+
+render();
+
+}
+
+
+/* ==========================================
+   RENDER EVERYTHING
+========================================== */
+
+function render(){
+
+renderFinance();
+
+renderMarket();
+
+renderTrade();
+
+renderGoals();
+
+}
+
+
+/* ==========================================
+   RESET
+========================================== */
+
+function resetEverything(){
+
+if(
+confirm(
+"Delete all Bob OS data?"
+)
+){
+
+localStorage.removeItem(
+"bobData"
+);
+
+localStorage.removeItem(
+"bobAssets"
+);
+
+localStorage.removeItem(
+"bobPassword"
+);
+
+location.reload();
+
+}
+
+}
+
+
+/* ==========================================
+   STARTUP
+========================================== */
+
+document.addEventListener(
+"DOMContentLoaded",
+()=>{
+
+document.getElementById(
+"notesBox"
+).value =
+data.notes || "";
+
+if(data.user){
+
+document.getElementById(
+"loginScreen"
+).classList.add("hidden");
+
+document.getElementById(
+"welcomeName"
+).textContent =
+data.user;
+
+document.getElementById(
+"systemUser"
+).textContent =
+data.user;
+
+addBob(
+"Welcome back, " +
+data.user +
+"! 😎"
+);
+
+}
+else{
+
+/*
+ Login screen remains visible.
+ */
+
+}
+
+render();
+
+logSystem(
+"BOB OS started."
+);
+
+setInterval(
+marketTick,
+3000
+);
+
+}
+);
+
+</script>
+
+</body>
+</html>
+```
